@@ -1,15 +1,15 @@
-name: Twitter to Telegram
+name: Twitter to Telegram Auto
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
 
 jobs:
-  send-tweets:
+  get-tweets:
     runs-on: ubuntu-latest
     steps:
-      - name: Send tweets to Telegram
+      - name: Fetch and send latest tweet
         uses: actions/github-script@v7
         with:
           script: |
@@ -17,11 +17,14 @@ jobs:
             const CHAT_ID = process.env.CHAT_ID;
             const SCREEN_NAME = process.env.SCREEN_NAME;
             
-            const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            // Latest tweet URL (public accessible)
+            const tweetUrl = `https://twitter.com/${SCREEN_NAME}`;
             
-            const message = `📢 *New Tweet from @${SCREEN_NAME}*%0A%0A🔗 https://twitter.com/${SCREEN_NAME}`;
+            const message = `📢 *Latest Tweet from @${SCREEN_NAME}*%0A%0A🔗 ${tweetUrl}%0A%0A🏷️ #JUGAAD #Solana #DesiHustle`;
             
-            await fetch(telegramUrl, {
+            const apiUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            
+            await fetch(apiUrl, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -31,6 +34,6 @@ jobs:
               })
             });
         env:
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          SCREEN_NAME: ${{ secrets.SCREEN_NAME }}
+          BOT_TOKEN: ${{ secrets.Bot_token }}
+          CHAT_ID: ${{ secrets.Chat_id }}
+          SCREEN_NAME: ${{ secrets.Screen_name }}
