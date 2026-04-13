@@ -1,39 +1,35 @@
 name: Twitter to Telegram Auto
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '*/10 * * * *'
-  workflow_dispatch:
 
 jobs:
-  get-tweets:
+  send-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch and send latest tweet
+      - name: Send test message to Telegram
         uses: actions/github-script@v7
         with:
           script: |
-            const BOT_TOKEN = process.env.BOT_TOKEN;
-            const CHAT_ID = process.env.CHAT_ID;
-            const SCREEN_NAME = process.env.SCREEN_NAME;
+            const token = process.env.BOT_TOKEN;
+            const chatId = process.env.CHAT_ID;
+            const url = `https://api.telegram.org/bot${token}/sendMessage`;
             
-            // Latest tweet URL (public accessible)
-            const tweetUrl = `https://twitter.com/${SCREEN_NAME}`;
+            const message = `🚀 *JUGAAD Bot is WORKING!* ✅%0A%0A📢 Automation setup complete.%0A%0A🔗 Twitter: https://twitter.com/JUGAAD_SOL%0A%0A🏷️ #JUGAAD #Solana`;
             
-            const message = `📢 *Latest Tweet from @${SCREEN_NAME}*%0A%0A🔗 ${tweetUrl}%0A%0A🏷️ #JUGAAD #Solana #DesiHustle`;
-            
-            const apiUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-            
-            await fetch(apiUrl, {
+            const res = await fetch(url, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: {'Content-Type': 'application/json'},
               body: JSON.stringify({
-                chat_id: CHAT_ID,
+                chat_id: chatId,
                 text: message,
                 parse_mode: 'Markdown'
               })
             });
+            const data = await res.json();
+            console.log(data);
         env:
-          BOT_TOKEN: ${{ secrets.Bot_token }}
-          CHAT_ID: ${{ secrets.Chat_id }}
-          SCREEN_NAME: ${{ secrets.Screen_name }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
