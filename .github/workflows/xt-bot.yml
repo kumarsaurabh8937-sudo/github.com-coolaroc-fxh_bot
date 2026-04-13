@@ -2,16 +2,14 @@ name: Twitter to Telegram Auto
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '*/15 * * * *'
 
 jobs:
-  send-tweet:
+  send:
     runs-on: ubuntu-latest
     steps:
-      - name: Send tweet link to Telegram
+      - name: Send message
         run: |
-          curl -X POST "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage" \
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage" \
             -d "chat_id=${{ secrets.CHAT_ID }}" \
-            -d "text=📢 *NEW TWEET FROM @${{ secrets.SCREEN_NAME }}*%0A%0A👇👇👇%0A%0A🔗 https://twitter.com/${{ secrets.SCREEN_NAME }}%0A%0A🏷️ #JUGAAD #Solana" \
+            -d "text=🚀 *JUGAAD Bot is LIVE* ✅%0A%0A📢 Latest tweet from @${{ secrets.SCREEN_NAME }}%0A%0A🔗 https://twitter.com/${{ secrets.SCREEN_NAME }}%0A%0A🏷️ #JUGAAD #Solana" \
             -d "parse_mode=Markdown"
